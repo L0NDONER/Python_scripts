@@ -9,6 +9,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 # Define the file system event handler
+
+
 class DownloadHandler(FileSystemEventHandler):
     # Method triggered on file creation
     def on_created(self, event):
@@ -21,7 +23,8 @@ class DownloadHandler(FileSystemEventHandler):
     # Method to process a file
     def process_file(self, file_path):
         # Ignore if the file is not in the specified folder or has certain extensions
-        ignored_extensions = ('.nfo', '.jpeg', '.jpg', '.sub', '.idx', '.torrent', '.png', '.ssr', '.ignore')
+        ignored_extensions = ('.idx', '.ignore', '.jpeg', '.jpg',
+                              '.nfo', '.png', '.srr', '.srt', '.sub', '.torrent')
 
         # Skip processing if the filename contains "sample" or any of the excluded keywords
         excluded_keywords = ['exclude1', 'exclude2', 'exclude3']
@@ -47,11 +50,13 @@ class DownloadHandler(FileSystemEventHandler):
         # Determine the destination based on TV show or movie
         if is_tv_show:
             # Extract series name from the filename (assuming a format like 'SeriesName S01E01')
-            series_name_match = re.search(r'^(.*?)\s*[Ss]\d{2}[Ee]\d{2}', file_name)
+            series_name_match = re.search(
+                r'^(.*?)\s*[Ss]\d{2}[Ee]\d{2}', file_name)
             if series_name_match:
                 series_name = series_name_match.group(1).strip()
                 # Define the series folder
-                series_folder = os.path.join(base_destination_folder, 'TV', series_name)
+                series_folder = os.path.join(
+                    base_destination_folder, 'TV', series_name)
             else:
                 return  # Unable to determine series name, skip processing
 
@@ -63,7 +68,8 @@ class DownloadHandler(FileSystemEventHandler):
 
         elif any(keyword in file_name.lower() for keyword in movie_keywords):
             category = 'Movies'
-            destination_path = os.path.join(base_destination_folder, category, file_name)
+            destination_path = os.path.join(
+                base_destination_folder, category, file_name)
             os.makedirs(os.path.dirname(destination_path), exist_ok=True)
         else:
             category = 'Other'
@@ -81,6 +87,7 @@ class DownloadHandler(FileSystemEventHandler):
         for root, dirs, files in os.walk(folder_path):
             for file_name in files:
                 self.process_file(os.path.join(root, file_name))
+
 
 # Main block
 if __name__ == "__main__":
