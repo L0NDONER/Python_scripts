@@ -1,48 +1,34 @@
-Ansible Desktop Configuration
-This repository contains an Ansible configuration file to simplify the process of updating multiple computers. By using this configuration, you can easily manage updates for your desktops and laptops in a centralized manner.
+# Media Organizer
 
-Overview
-This README provides step-by-step instructions on how to use the Ansible configuration file to update all of your computers.
+![Python](5848152fcef1014c0b5e4967.png)
 
-Requirements
-Ansible: Ensure Ansible is installed on your system.
-Inventory file: Create an inventory file that lists the computers you want to update.
-Getting Started
+## Overview
+Media Organizer is a Python script that continuously monitors a specified directory for new media files and automatically categorizes them into appropriate folders. It uses the `watchdog` library to observe file system events and organizes media files based on predefined rules for TV shows, movies, and other file types.
 
-pip install ansible
+## Features
+- **Automatic File Categorization**: Classifies and moves media files to respective directories for TV shows, movies, etc.
+- **Modular Design**: Follows the Open-Closed Principle, making the script extensible for new file types without modifying existing code.
+- **Background Monitoring**: Uses `watchdog` to monitor a directory in real-time for new file additions.
 
-Create Inventory File:
+## Requirements
+- Python 3.x
+- `watchdog` library (can be installed via `pip install watchdog`)
 
+## Usage
+1. **Set Up the Script**: Place the script in a suitable directory.
+2. **Run the Script**: Use the command `python3 MediaOrganizer.py /path/to/watch/folder`. Replace `/path/to/watch/folder` with the path of the directory you want to monitor.
+3. **Background Execution**: Optionally, run the script in the background using `nohup` or as a system service.
 
-<pre>
-```ini
-[all]
-localhost
+## Customization
+- **FileProcessor Classes**: Extend or modify the `TVShowProcessor`, `MovieProcessor`, and `OtherProcessor` classes for custom file handling logic.
+- **File Extension Filters**: Adjust the `ignored_extensions` in the `FileProcessor` class to ignore specific file types.
 
-[desktops]
-desktop1
-desktop2
+## Contributing
+Contributions to enhance Media Organizer or add new features are welcome. Please follow standard coding conventions and add tests for new functionalities.
 
-[laptops]
-laptop1
-laptop2
-```
-</pre>
-# update.yml
-<pre>
----
-- hosts: all
-  become: yes
+## License
+[MIT License](LICENSE)
 
-  tasks:
-    - name: Update all packages
-      apt:
-        update_cache: yes
-        upgrade: yes
+## Acknowledgements
+- This project utilizes the [watchdog](https://pypi.org/project/watchdog/) library for monitoring file system events.
 
-  handlers:
-    - name: Clean up
-      file:
-        state: absent
-        path: /var/cache/apt/archives/_
-</pre>
